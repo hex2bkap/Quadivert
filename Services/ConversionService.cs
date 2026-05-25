@@ -7,10 +7,10 @@ using SixLabors.ImageSharp.Formats.Tiff;
 using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using PixShift.Models;
-using ResizeMode = PixShift.Models.ResizeMode;
+using Quadivert.Models;
+using ResizeMode = Quadivert.Models.ResizeMode;
 
-namespace PixShift.Services;
+namespace Quadivert.Services;
 
 public class ConversionService
 {

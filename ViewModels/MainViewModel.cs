@@ -3,12 +3,12 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
-using PixShift.Models;
-using PixShift.Services;
-using ResizeMode = PixShift.Models.ResizeMode;
-using RenameMode = PixShift.Models.RenameMode;
+using Quadivert.Models;
+using Quadivert.Services;
+using ResizeMode = Quadivert.Models.ResizeMode;
+using RenameMode = Quadivert.Models.RenameMode;
 
-namespace PixShift.ViewModels;
+namespace Quadivert.ViewModels;
 
 public partial class MainViewModel : ObservableObject
 {

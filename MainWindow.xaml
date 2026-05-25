@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Window
-    x:Class="PixShift.MainWindow"
+    x:Class="Quadivert.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="PixShift">
+    Title="Quadivert">
 
     <Grid>
         <Grid.RowDefinitions>

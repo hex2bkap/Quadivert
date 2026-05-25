@@ -1,4 +1,4 @@
-namespace PixShift.Models;
+namespace Quadivert.Models;
 
 public enum ResizeMode { Pixel, Percent }
 public enum RenameMode { None, Suffix, Replace }

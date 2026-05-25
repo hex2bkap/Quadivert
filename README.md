@@ -1,12 +1,12 @@
-# PixShift
+# Quadivert
 
 画像ファイルの形式変換・リサイズツール（Windows デスクトップアプリ）
 
-![PixShift スクリーンショット](docs/screenshot.png) ![PixShift ファイル追加済み](docs/screenshot2.png)
+![Quadivert スクリーンショット](docs/screenshot.png) ![Quadivert ファイル追加済み](docs/screenshot2.png)
 
 ## 概要
 
-PixShift は、画像ファイルの形式変換とリサイズをまとめて行える Windows 向けデスクトップアプリです。
+Quadivert は、画像ファイルの形式変換とリサイズをまとめて行える Windows 向けデスクトップアプリです。
 ドラッグ＆ドロップで複数ファイルをまとめて変換できます。
 
 ## 機能
@@ -42,7 +42,7 @@ https://learn.microsoft.com/ja-jp/windows/apps/windows-app-sdk/downloads
 
 ### 2. アプリの起動
 
-[Releases](../../releases) から最新の zip をダウンロードして解凍し、`PixShift.exe` をダブルクリックするだけで起動できます。インストール不要です。
+[Releases](../../releases) から最新の zip をダウンロードして解凍し、`Quadivert.exe` をダブルクリックするだけで起動できます。インストール不要です。
 
 ### HEIC / HEIF を使用する場合
 

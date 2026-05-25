@@ -1,7 +1,7 @@
 """
-PixShift アイコン生成スクリプト
+Quadivert アイコン生成スクリプト
 デザイン: A-2（水平矢印＋左塗り正方形・右枠正方形）× A-3カラー（グリーン→ブルー）
-出力: PixShift/Assets/PixShift.ico (16/24/32/48/64/128/256px 全サイズ埋め込み)
+出力: Quadivert/Assets/Quadivert.ico (16/24/32/48/64/128/256px 全サイズ埋め込み)
 """
 
 from PIL import Image, ImageDraw
@@ -104,7 +104,7 @@ for s in SIZES:
     icons[s] = create_icon(s)
     print(f"  {s:3}px  完了")
 
-ico_path = os.path.join(OUT_DIR, "PixShift.ico")
+ico_path = os.path.join(OUT_DIR, "Quadivert.ico")
 icons[256].save(
     ico_path,
     format="ICO",

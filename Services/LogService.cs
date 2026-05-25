@@ -1,9 +1,9 @@
-namespace PixShift.Services;
+namespace Quadivert.Services;
 
 public class LogService
 {
     private static readonly string LogDir =
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PixShift", "logs");
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Quadivert", "logs");
 
     private readonly string _logFile;
     private readonly object _lock = new();

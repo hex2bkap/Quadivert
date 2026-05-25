@@ -2,19 +2,19 @@ using System.Diagnostics;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using PixShift.Helpers;
-using PixShift.ViewModels;
+using Quadivert.Helpers;
+using Quadivert.ViewModels;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 
-namespace PixShift;
+namespace Quadivert;
 
 public sealed partial class MainWindow : Window
 {
     public MainViewModel ViewModel { get; }
 
-    private static readonly string AppVersion = "1.0.1";
-    private static readonly string AppName = "PixShift";
+    private static readonly string AppVersion = "1.1.0";
+    private static readonly string AppName = "Quadivert";
 
     public MainWindow()
     {
@@ -28,7 +28,7 @@ public sealed partial class MainWindow : Window
 
     private void SetWindowIcon()
     {
-        var iconPath = Path.Combine(AppContext.BaseDirectory, "Assets", "PixShift.ico");
+        var iconPath = Path.Combine(AppContext.BaseDirectory, "Assets", "Quadivert.ico");
         if (File.Exists(iconPath))
             AppWindow.SetIcon(iconPath);
     }
@@ -89,7 +89,7 @@ public sealed partial class MainWindow : Window
     {
         var logDir = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "PixShift", "logs");
+            "Quadivert", "logs");
         Directory.CreateDirectory(logDir);
         Process.Start(new ProcessStartInfo("explorer.exe", logDir) { UseShellExecute = true });
     }

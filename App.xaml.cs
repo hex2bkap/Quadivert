@@ -1,7 +1,7 @@
 using Microsoft.UI.Xaml;
-using PixShift.Services;
+using Quadivert.Services;
 
-namespace PixShift;
+namespace Quadivert;
 
 public partial class App : Application
 {

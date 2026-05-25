@@ -1,9 +1,9 @@
 using System.Runtime.InteropServices;
 using Microsoft.UI.Windowing;
 using Windows.Graphics;
-using PixShift.Models;
+using Quadivert.Models;
 
-namespace PixShift.Helpers;
+namespace Quadivert.Helpers;
 
 public static class WindowHelper
 {

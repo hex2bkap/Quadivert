@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace PixShift.Models;
+namespace Quadivert.Models;
 
 public enum ConversionStatus { Pending, Converting, Done, Error }
 

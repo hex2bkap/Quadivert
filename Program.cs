@@ -1,4 +1,4 @@
-namespace PixShift;
+namespace Quadivert;
 
 class Program
 {

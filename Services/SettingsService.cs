@@ -1,12 +1,12 @@
 using System.Text.Json;
-using PixShift.Models;
+using Quadivert.Models;
 
-namespace PixShift.Services;
+namespace Quadivert.Services;
 
 public class SettingsService
 {
     private static readonly string SettingsDir =
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PixShift");
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Quadivert");
     private static readonly string SettingsFile = Path.Combine(SettingsDir, "settings.json");
 
     public AppSettings Current { get; private set; } = new();
