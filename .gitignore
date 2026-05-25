@@ -1,0 +1,22 @@
+# ビルド成果物
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# JetBrains Rider
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# ログ・設定（実行時に生成されるもの）
+*.log
+
+# NuGet
+*.nupkg
+packages/

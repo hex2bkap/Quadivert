@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="PixShift.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="PixShift">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- メニューバー -->
+        <MenuBar Grid.Row="0">
+            <MenuBarItem Title="ヘルプ">
+                <MenuFlyoutItem Text="ログフォルダを開く" Click="OpenLogFolder_Click"/>
+                <MenuFlyoutSeparator/>
+                <MenuFlyoutItem Text="バージョン情報" Click="AboutMenuItem_Click"/>
+            </MenuBarItem>
+        </MenuBar>
+
+        <!-- メインコンテンツ -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Padding="20,16,20,24" Spacing="16">
+
+                <!-- ① ファイル追加エリア -->
+                <TextBlock Text="ファイルを追加" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+
+                <Border
+                    x:Name="DropAreaBorder"
+                    BorderThickness="2"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    CornerRadius="8"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    MinHeight="88"
+                    AllowDrop="True"
+                    DragOver="DropArea_DragOver"
+                    DragEnter="DropArea_DragEnter"
+                    DragLeave="DropArea_DragLeave"
+                    Drop="DropArea_Drop"
+                    Padding="16">
+                    <StackPanel Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                            <FontIcon Glyph="&#xE8B7;" FontSize="20"/>
+                            <TextBlock Text="ファイルまたはフォルダをここにドロップ" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <Button
+                            Content="ファイルを選択..."
+                            HorizontalAlignment="Center"
+                            Command="{x:Bind ViewModel.AddFilesCommand}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- ② ファイルリスト -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="0"
+                        Text="{x:Bind ViewModel.FileCountText, Mode=OneWay}"
+                        Style="{ThemeResource BodyStrongTextBlockStyle}"
+                        VerticalAlignment="Center"/>
+                    <Button
+                        Grid.Column="1"
+                        Content="すべて削除"
+                        Command="{x:Bind ViewModel.ClearAllCommand}"/>
+                </Grid>
+
+                <!-- 読み込み中インジケーター -->
+                <InfoBar
+                    IsOpen="{x:Bind ViewModel.IsLoadingFiles, Mode=OneWay}"
+                    IsClosable="False"
+                    Severity="Informational"
+                    Message="{x:Bind ViewModel.LoadingText, Mode=OneWay}">
+                    <InfoBar.Content>
+                        <ProgressBar
+                            Margin="0,4,0,8"
+                            Maximum="100"
+                            Value="{x:Bind ViewModel.LoadingProgressRatio, Mode=OneWay}"
+                            IsIndeterminate="{x:Bind ViewModel.IsLoadingIndeterminate, Mode=OneWay}"/>
+                    </InfoBar.Content>
+                </InfoBar>
+
+                <!-- 除外ファイル通知 -->
+                <InfoBar
+                    IsOpen="{x:Bind ViewModel.IsSkippedFilesWarningOpen, Mode=OneWay}"
+                    IsClosable="True"
+                    Severity="Warning"
+                    Message="{x:Bind ViewModel.SkippedFilesMessage, Mode=OneWay}"
+                    Closed="SkippedWarning_Closed"/>
+
+                <ListView
+                    x:Name="FileListView"
+                    ItemsSource="{x:Bind ViewModel.Files}"
+                    Tag="{x:Bind ViewModel}"
+                    SelectionMode="None"
+                    MinHeight="120"
+                    MaxHeight="260"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    CornerRadius="8"
+                    BorderThickness="1"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="4,2" ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    Grid.Column="0"
+                                    Text="{Binding DisplayText}"
+                                    VerticalAlignment="Center"
+                                    TextTrimming="CharacterEllipsis"/>
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Text="{Binding StatusIcon}"
+                                    VerticalAlignment="Center"
+                                    FontSize="14"/>
+                                <Button
+                                    Grid.Column="2"
+                                    Content="&#xE711;"
+                                    FontFamily="Segoe Fluent Icons"
+                                    FontSize="12"
+                                    Width="32" Height="32"
+                                    Padding="0"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding Tag.RemoveFileCommand, ElementName=FileListView}"
+                                    CommandParameter="{Binding}">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Setter Property="BorderBrush" Value="Transparent"/>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <Border BorderThickness="0,1,0,0" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,4,0,0"/>
+
+                <!-- ③ 変換設定 -->
+                <TextBlock Text="変換設定" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+
+                <!-- JPEG透明度警告 -->
+                <InfoBar
+                    IsOpen="{x:Bind ViewModel.ShowTransparencyWarning, Mode=OneWay}"
+                    IsClosable="False"
+                    Severity="Warning"
+                    Title="透明部分の扱い"
+                    Message="JPEGは透明度を保持できません。透明部分は白で塗りつぶされます。"/>
+
+                <!-- 出力形式 -->
+                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <TextBlock Text="出力形式" Style="{ThemeResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" Width="80"/>
+                    <ComboBox
+                        ItemsSource="{x:Bind ViewModel.OutputFormats}"
+                        SelectedItem="{x:Bind ViewModel.SelectedOutputFormat, Mode=TwoWay}"
+                        Width="140"/>
+                </StackPanel>
+
+                <!-- リサイズ -->
+                <StackPanel Spacing="10">
+                    <CheckBox
+                        Content="リサイズ（任意）"
+                        IsChecked="{x:Bind ViewModel.ResizeEnabled, Mode=TwoWay}"/>
+
+                    <StackPanel
+                        Visibility="{x:Bind ViewModel.ResizePanelVisibility, Mode=OneWay}"
+                        Spacing="10"
+                        Margin="28,0,0,0">
+
+                        <!-- モード切り替え -->
+                        <StackPanel Orientation="Horizontal" Spacing="16">
+                            <RadioButton
+                                Content="ピクセル指定"
+                                IsChecked="{x:Bind ViewModel.IsPixelMode, Mode=TwoWay}"/>
+                            <RadioButton
+                                Content="% 指定"
+                                IsChecked="{x:Bind ViewModel.IsPercentMode, Mode=TwoWay}"/>
+                        </StackPanel>
+
+                        <!-- ピクセル入力 -->
+                        <StackPanel
+                            Visibility="{x:Bind ViewModel.PixelInputVisibility, Mode=OneWay}"
+                            Orientation="Horizontal"
+                            Spacing="12">
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="幅" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                <NumberBox
+                                    Value="{x:Bind ViewModel.ResizeWidth, Mode=TwoWay}"
+                                    Minimum="1" Maximum="16384"
+                                    SpinButtonPlacementMode="Compact"
+                                    Width="110"/>
+                            </StackPanel>
+                            <TextBlock Text="×" VerticalAlignment="Bottom" Margin="0,0,0,6"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="高さ" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                <NumberBox
+                                    Value="{x:Bind ViewModel.ResizeHeight, Mode=TwoWay}"
+                                    Minimum="1" Maximum="16384"
+                                    SpinButtonPlacementMode="Compact"
+                                    Width="110"/>
+                            </StackPanel>
+                            <ToggleButton
+                                Content="&#xE72E;"
+                                FontFamily="Segoe Fluent Icons"
+                                IsChecked="{x:Bind ViewModel.LockAspectRatio, Mode=TwoWay}"
+                                VerticalAlignment="Bottom"
+                                ToolTipService.ToolTip="アスペクト比を維持"/>
+                            <Button
+                                Content="適用"
+                                VerticalAlignment="Bottom"
+                                Click="ApplyResizeButton_Click"
+                                ToolTipService.ToolTip="数値を確定してフォーカスを解除"/>
+                        </StackPanel>
+
+                        <!-- % 入力 + スライダー -->
+                        <StackPanel
+                            Visibility="{x:Bind ViewModel.PercentInputVisibility, Mode=OneWay}"
+                            Spacing="8">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <NumberBox
+                                    Value="{x:Bind ViewModel.ResizePercent, Mode=TwoWay}"
+                                    Minimum="1" Maximum="400"
+                                    SmallChange="5"
+                                    SpinButtonPlacementMode="Compact"
+                                    Width="120"/>
+                                <TextBlock Text="%" VerticalAlignment="Center"
+                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            </StackPanel>
+                            <Slider
+                                Value="{x:Bind ViewModel.ResizePercent, Mode=TwoWay}"
+                                Minimum="1" Maximum="400"
+                                TickFrequency="50"
+                                TickPlacement="Outside"
+                                Width="280"
+                                HorizontalAlignment="Left"/>
+                        </StackPanel>
+
+                    </StackPanel>
+                </StackPanel>
+
+                <Border BorderThickness="0,1,0,0" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,4,0,0"/>
+
+                <!-- ④ 出力先 -->
+                <TextBlock Text="出力先" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+
+                <StackPanel Spacing="8">
+                    <RadioButton
+                        Content="元ファイルと同じフォルダ内に output/ を作成（推奨）"
+                        IsChecked="{x:Bind ViewModel.UseSubfolder, Mode=TwoWay}"/>
+                    <RadioButton
+                        Content="フォルダを指定する"
+                        IsChecked="{x:Bind ViewModel.UseCustomOutputFolder, Mode=TwoWay}"/>
+                    <StackPanel
+                        Visibility="{x:Bind ViewModel.CustomOutputRowVisibility, Mode=OneWay}"
+                        Orientation="Horizontal"
+                        Spacing="8"
+                        Margin="28,0,0,0">
+                        <TextBox
+                            Width="380"
+                            Text="{x:Bind ViewModel.CustomOutputFolder, Mode=TwoWay}"
+                            PlaceholderText="出力フォルダのパス"
+                            IsReadOnly="True"/>
+                        <Button
+                            Content="参照..."
+                            Command="{x:Bind ViewModel.BrowseOutputFolderCommand}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <Border BorderThickness="0,1,0,0" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,4,0,0"/>
+
+                <!-- ⑤ リネーム設定 -->
+                <TextBlock Text="リネーム（任意）" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+
+                <StackPanel Spacing="6">
+                    <RadioButton
+                        Content="リネームなし"
+                        IsChecked="{x:Bind ViewModel.IsNoRename, Mode=TwoWay}"/>
+
+                    <RadioButton
+                        Content="サフィックスを追加"
+                        IsChecked="{x:Bind ViewModel.IsSuffixRename, Mode=TwoWay}"/>
+                    <StackPanel
+                        Visibility="{x:Bind ViewModel.RenameSuffixPanelVisibility, Mode=OneWay}"
+                        Spacing="6"
+                        Margin="28,0,0,0">
+                        <ComboBox
+                            ItemsSource="{x:Bind ViewModel.SuffixPresets}"
+                            SelectedItem="{x:Bind ViewModel.RenameSuffixPreset, Mode=TwoWay}"
+                            Width="160"/>
+                        <TextBox
+                            Visibility="{x:Bind ViewModel.RenameSuffixCustomVisibility, Mode=OneWay}"
+                            Text="{x:Bind ViewModel.RenameSuffixCustom, Mode=TwoWay}"
+                            PlaceholderText="サフィックスを入力（例: _edit）"
+                            Width="260"
+                            HorizontalAlignment="Left"/>
+                        <TextBlock
+                            Text="{x:Bind ViewModel.RenameSuffixExample, Mode=OneWay}"
+                            FontSize="12"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    </StackPanel>
+
+                    <RadioButton
+                        Content="ファイル名を置き換え＋連番"
+                        IsChecked="{x:Bind ViewModel.IsReplaceRename, Mode=TwoWay}"/>
+                    <StackPanel
+                        Visibility="{x:Bind ViewModel.RenameReplacePanelVisibility, Mode=OneWay}"
+                        Spacing="6"
+                        Margin="28,0,0,0">
+                        <TextBox
+                            Text="{x:Bind ViewModel.RenameReplaceString, Mode=TwoWay}"
+                            PlaceholderText="ベース名を入力（例: 変換後ファイル）"
+                            Width="300"
+                            HorizontalAlignment="Left"/>
+                        <TextBlock
+                            Text="{x:Bind ViewModel.RenameReplaceExample, Mode=OneWay}"
+                            FontSize="12"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- ⑥ 変換ボタン -->
+                <Grid Margin="0,8,0,0">
+                    <Button
+                        Content="変換開始"
+                        HorizontalAlignment="Stretch"
+                        Style="{ThemeResource AccentButtonStyle}"
+                        Command="{x:Bind ViewModel.StartConversionCommand}"
+                        Visibility="{x:Bind ViewModel.ConvertButtonVisibility, Mode=OneWay}"/>
+                    <Button
+                        Content="キャンセル"
+                        HorizontalAlignment="Stretch"
+                        BorderThickness="1.5"
+                        Command="{x:Bind ViewModel.CancelCommand}"
+                        Visibility="{x:Bind ViewModel.CancelButtonVisibility, Mode=OneWay}">
+                        <Button.Resources>
+                            <SolidColorBrush x:Key="ButtonBackground" Color="Transparent"/>
+                            <SolidColorBrush x:Key="ButtonForeground" Color="#FF6B6B"/>
+                            <SolidColorBrush x:Key="ButtonBorderBrush" Color="#C42B1C"/>
+                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#22C42B1C"/>
+                            <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="#FF6B6B"/>
+                            <SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="#C42B1C"/>
+                            <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#44C42B1C"/>
+                            <SolidColorBrush x:Key="ButtonForegroundPressed" Color="#FF8080"/>
+                            <SolidColorBrush x:Key="ButtonBorderBrushPressed" Color="#E03020"/>
+                        </Button.Resources>
+                    </Button>
+                </Grid>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- 固定ステータスパネル -->
+        <Border
+            Grid.Row="2"
+            BorderThickness="0,1,0,0"
+            BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+            Background="{ThemeResource LayerFillColorDefaultBrush}">
+            <StackPanel Padding="20,8,20,12" Spacing="6">
+                <ProgressBar
+                    Value="{x:Bind ViewModel.ProgressValue, Mode=OneWay}"
+                    Maximum="100"
+                    Visibility="{x:Bind ViewModel.ShowProgressVisibility, Mode=OneWay}"/>
+                <TextBlock
+                    Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}"
+                    TextWrapping="Wrap"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

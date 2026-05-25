@@ -1,0 +1,12 @@
+# 自動改行コード正規化
+* text=auto
+
+# バイナリファイルは変換しない
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.gif binary
+*.bmp binary
+*.tiff binary
+*.tif binary
