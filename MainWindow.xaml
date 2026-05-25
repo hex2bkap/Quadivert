@@ -125,7 +125,7 @@
                                 <Button
                                     Grid.Column="2"
                                     Content="&#xE711;"
-                                    FontFamily="Segoe Fluent Icons"
+                                    FontFamily="Segoe MDL2 Assets"
                                     FontSize="12"
                                     Width="32" Height="32"
                                     Padding="0"
@@ -212,7 +212,8 @@
                             </StackPanel>
                             <ToggleButton
                                 Content="&#xE72E;"
-                                FontFamily="Segoe Fluent Icons"
+                                FontFamily="Segoe MDL2 Assets"
+                                Width="36" Height="36" Padding="0"
                                 IsChecked="{x:Bind ViewModel.LockAspectRatio, Mode=TwoWay}"
                                 VerticalAlignment="Bottom"
                                 ToolTipService.ToolTip="アスペクト比を維持"/>
@@ -236,6 +237,11 @@
                                     Width="120"/>
                                 <TextBlock Text="%" VerticalAlignment="Center"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                <Button
+                                    Content="適用"
+                                    VerticalAlignment="Center"
+                                    Click="ApplyResizeButton_Click"
+                                    ToolTipService.ToolTip="数値を確定してフォーカスを解除"/>
                             </StackPanel>
                             <Slider
                                 Value="{x:Bind ViewModel.ResizePercent, Mode=TwoWay}"

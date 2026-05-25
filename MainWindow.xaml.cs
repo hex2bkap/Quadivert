@@ -13,7 +13,7 @@ public sealed partial class MainWindow : Window
 {
     public MainViewModel ViewModel { get; }
 
-    private static readonly string AppVersion = "1.0.0";
+    private static readonly string AppVersion = "1.0.1";
     private static readonly string AppName = "PixShift";
 
     public MainWindow()
