@@ -2,7 +2,7 @@
 
 画像ファイルの形式変換・リサイズツール（Windows デスクトップアプリ）
 
-![PixShift スクリーンショット](docs/screenshot.png)
+![PixShift スクリーンショット](docs/screenshot.png) ![PixShift ファイル追加済み](docs/screenshot2.png)
 
 ## 概要
 
